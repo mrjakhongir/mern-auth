@@ -1,3 +1,3 @@
-export const userController = (req, res) => {
-  res.json({ message: 'hello from controller' })
+export const user = (req, res) => {
+  res.json({ message: 'hello from user' })
 }
