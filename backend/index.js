@@ -1,6 +1,7 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import userRouter from './routers/user.route.js'
 dotenv.config()
 
 mongoose
@@ -16,3 +17,5 @@ mongoose
   .catch((err) => console.log(err))
 
 const app = express()
+
+app.get('/', userRouter)
