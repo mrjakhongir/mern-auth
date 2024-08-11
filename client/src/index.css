@@ -2,14 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @layer base {
-	:root {
-		--color-primary: #141e30;
-		--color-secondary: #243b55;
-		--bg-light: #f6f5f7;
-	}
-} */
-
 body {
 	font-family: Arial, Helvetica, sans-serif;
 }
