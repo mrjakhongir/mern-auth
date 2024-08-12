@@ -7,10 +7,11 @@ import { useForm } from 'react-hook-form';
 import Title from './Title';
 import SocialApps from './SocialApps';
 import Text from './Text';
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 
 type RegisterFormProps = {
 	toggleWelcome: boolean;
+	setToggleWelcome: React.Dispatch<SetStateAction<boolean>>;
 };
 
 interface UserData {
@@ -19,7 +20,7 @@ interface UserData {
 	password: string;
 }
 
-function RegisterForm({ toggleWelcome }: RegisterFormProps) {
+function RegisterForm({ toggleWelcome, setToggleWelcome }: RegisterFormProps) {
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const form = useForm<UserData>({
@@ -44,9 +45,10 @@ function RegisterForm({ toggleWelcome }: RegisterFormProps) {
 				body: JSON.stringify(formData),
 			});
 			const data = await res.json();
-
-			reset();
+			console.log(data);
 			setLoading(false);
+			setToggleWelcome((prevState) => !prevState);
+			reset();
 			if (!data.success) {
 				setError(true);
 				return;
