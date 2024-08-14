@@ -1,13 +1,16 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { Box, TextField } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import HttpsRoundedIcon from '@mui/icons-material/HttpsRounded';
-import { useForm } from 'react-hook-form';
 
 import SocialApps from './SocialApps';
 import Text from './Text';
 import Title from './Title';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import { signInStart, signInSuccess, signInFailure } from '../redux/userSlice';
+import { RootState } from '../redux/store';
 
 type LoginFormProps = {
 	toggleWelcome: boolean;
@@ -19,8 +22,8 @@ interface UserData {
 }
 
 function LoginForm({ toggleWelcome }: LoginFormProps) {
-	const [error, setError] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const dispatch = useDispatch();
+	const { loading, error } = useSelector((state: RootState) => state.user);
 	const navigate = useNavigate();
 
 	const form = useForm<UserData>({
@@ -32,8 +35,8 @@ function LoginForm({ toggleWelcome }: LoginFormProps) {
 	const { register, handleSubmit, reset } = form;
 
 	async function handleForm(formData: UserData) {
-		setLoading(true);
-		setError(false);
+		dispatch(signInStart());
+
 		try {
 			const res = await fetch('/api/auth/signin', {
 				method: 'POST',
@@ -42,17 +45,18 @@ function LoginForm({ toggleWelcome }: LoginFormProps) {
 				},
 				body: JSON.stringify(formData),
 			});
+
 			const data = await res.json();
-			reset();
-			setLoading(false);
-			if (!data.username) {
-				setError(true);
+			if (!data.success) {
+				dispatch(signInFailure(data.message));
 				return;
 			}
+
+			dispatch(signInSuccess(data));
+			reset();
 			navigate('/');
 		} catch (err) {
-			setLoading(false);
-			setError(true);
+			dispatch(signInFailure(error));
 		}
 	}
 
@@ -88,9 +92,7 @@ function LoginForm({ toggleWelcome }: LoginFormProps) {
 						/>
 					</Box>
 				</div>
-				<p className='text-red-700 text-center'>
-					{error && 'Incorrect email or password'}
-				</p>
+				<p className='text-red-700 text-center'>{error && error}</p>
 				<button
 					className={`uppercase text-white text-sm font-semibold bg-[#141e30] self-center rounded-full py-2 px-8 transition-all border mt-5 hover:bg-white hover:text-[#131e30] border-[#131e30] ${
 						loading && 'opacity-80 cursor-not-allowed'
