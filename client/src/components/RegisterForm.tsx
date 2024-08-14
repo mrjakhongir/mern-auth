@@ -5,9 +5,9 @@ import { Box, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import Title from './Title';
-import SocialApps from './SocialApps';
 import Text from './Text';
 import { SetStateAction, useState } from 'react';
+import OAuth from './OAuth';
 
 type RegisterFormProps = {
 	toggleWelcome: boolean;
@@ -69,7 +69,7 @@ function RegisterForm({ toggleWelcome, setToggleWelcome }: RegisterFormProps) {
 				className='h-full flex flex-col gap-3 min-w-[350px]'
 				onSubmit={handleSubmit(handleForm)}>
 				<Title content='Create Account' theme='light' />
-				<SocialApps />
+				<OAuth />
 				<Text content='or use your email for registration' theme='light' />
 				<div className='flex flex-col gap-6'>
 					<Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
@@ -80,6 +80,7 @@ function RegisterForm({ toggleWelcome, setToggleWelcome }: RegisterFormProps) {
 							label='Username'
 							variant='standard'
 							className='w-full'
+							required
 							{...register('username')}
 						/>
 					</Box>
@@ -89,6 +90,7 @@ function RegisterForm({ toggleWelcome, setToggleWelcome }: RegisterFormProps) {
 							label='Email'
 							variant='standard'
 							className='w-full'
+							required
 							{...register('email')}
 						/>
 					</Box>
@@ -98,6 +100,7 @@ function RegisterForm({ toggleWelcome, setToggleWelcome }: RegisterFormProps) {
 							label='Password'
 							variant='standard'
 							className='w-full'
+							required
 							{...register('password')}
 						/>
 					</Box>

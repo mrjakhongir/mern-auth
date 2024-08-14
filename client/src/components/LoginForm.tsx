@@ -5,12 +5,12 @@ import { Box, TextField } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import HttpsRoundedIcon from '@mui/icons-material/HttpsRounded';
 
-import SocialApps from './SocialApps';
 import Text from './Text';
 import Title from './Title';
 
 import { signInStart, signInSuccess, signInFailure } from '../redux/userSlice';
 import { RootState } from '../redux/store';
+import OAuth from './OAuth';
 
 type LoginFormProps = {
 	toggleWelcome: boolean;
@@ -70,7 +70,7 @@ function LoginForm({ toggleWelcome }: LoginFormProps) {
 				className='h-full flex flex-col gap-3 min-w-[350px]'
 				onSubmit={handleSubmit(handleForm)}>
 				<Title content='Sign In' theme='light' />
-				<SocialApps />
+				<OAuth />
 				<Text content='or use your account' theme='light' />
 				<div className='flex flex-col gap-6'>
 					<Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
@@ -79,6 +79,7 @@ function LoginForm({ toggleWelcome }: LoginFormProps) {
 							label='Email'
 							variant='standard'
 							className='w-full'
+							required
 							{...register('email')}
 						/>
 					</Box>
@@ -88,6 +89,7 @@ function LoginForm({ toggleWelcome }: LoginFormProps) {
 							label='Password'
 							variant='standard'
 							className='w-full'
+							required
 							{...register('password')}
 						/>
 					</Box>
