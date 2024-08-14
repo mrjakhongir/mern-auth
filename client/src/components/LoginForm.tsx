@@ -47,7 +47,7 @@ function LoginForm({ toggleWelcome }: LoginFormProps) {
 			});
 
 			const data = await res.json();
-			if (!data.success) {
+			if (!data.username) {
 				dispatch(signInFailure(data.message));
 				return;
 			}
