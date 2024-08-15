@@ -1,7 +1,7 @@
 import bcryptjs from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 import { errorHandler } from '../utils/error.js';
-import jwt from 'jsonwebtoken';
 
 export async function signupController(req, res, next) {
 	const { username, email, password } = req.body;
@@ -39,6 +39,57 @@ export async function signinController(req, res, next) {
 			.cookie('access_token', token, { httpOnly: true, expires: expityDate })
 			.status(200)
 			.json(user);
+	} catch (err) {
+		next(err);
+	}
+}
+
+export async function signinGoogleController(req, res, next) {
+	const { email, username, photo } = req.body;
+	try {
+		const validUser = await User.findOne({ email });
+
+		if (validUser) {
+			const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+			const { password: hashedPassword, ...rest } = validUser._doc;
+			const expiryDate = new Date(Date.now() + 86400000);
+			res
+				.cookie('access_token', token, { httpOnly: true, expires: expiryDate })
+				.status(200)
+				.json(rest);
+		} else {
+			try {
+				const generatedPassword =
+					Math.random().toString(36).slice(-8) +
+					Math.random().toString(36).slice(-8);
+
+				const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+
+				const newUser = new User({
+					username:
+						username.split(' ').join('').toLowerCase() +
+						Math.floor(Math.random() * 10000).toString(),
+					email,
+					password: hashedPassword,
+					profilePicture: photo,
+				});
+
+				await newUser.save();
+
+				const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+				const { password: hashedPassword2, ...rest } = validUser._doc;
+				const expityDate = new Date(Date.now() + 86400000);
+				res
+					.cookie('access_token', token, {
+						httpOnly: true,
+						expires: expityDate,
+					})
+					.status(200)
+					.json(rest);
+			} catch (err) {
+				next(err);
+			}
+		}
 	} catch (err) {
 		next(err);
 	}

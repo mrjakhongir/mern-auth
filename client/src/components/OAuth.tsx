@@ -21,7 +21,7 @@ function OAuth() {
 					photo: result.user.photoURL,
 				}),
 			});
-			const data = response.json();
+			const data = await response.json();
 			dispatch(signInSuccess(data));
 		} catch (err) {
 			console.log(err);
